@@ -8,7 +8,13 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.10"
 xbbg = "^0.7.7"
+blpapi = {version = "^3.21.0", source = "bloomberg"}
 
+
+[[tool.poetry.source]]
+name = "bloomberg"
+url = "https://bcms.bloomberg.com/pip/simple"
+priority = "supplemental"
 
 [build-system]
 requires = ["poetry-core"]
