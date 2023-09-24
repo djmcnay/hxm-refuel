@@ -409,4 +409,4 @@ pytz = ">=2020.4"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.11"
-content-hash = "f2604eb30510b1be6331e4408e8d3676867b9d9e3a31541abedcf8548ea89169"
+content-hash = "f6f662db6f2dbf4868628adde91fb7663e78c7c97f249aabc2fb0c113aaf7920"
