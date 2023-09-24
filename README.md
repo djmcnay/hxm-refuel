@@ -9,17 +9,20 @@ In order to make calls to Bloomberg we must have the `blpapi` installed.
 We then extend the excellent `xbbg` package. 
 One complication is the installation of `blpapi` which is a bit of a pain in the backside.
 
-According to the [Bloomberg website](https://www.bloomberg.com/professional/support/api-library/) 
-one can install using pip with:
+Try as I might, I can't get the `pyproject.toml` to correctly install `blpapi` as a dependency.
+If using pip the advice from Bloomberg is trivial
+ [Bloomberg website](https://www.bloomberg.com/professional/support/api-library/)
+
 ```
 python -m pip install --index-url=https://bcms.bloomberg.com/pip/simple blpapi
 ```
 
-For Poetry there are [2 steps required](https://github.com/python-poetry/poetry/issues/7587):
-Setting up Bloomberg as a source & then installing;
-This is FYI because the pyproject.toml file should take care of this.
+For Poetry there are [2 steps required](https://github.com/python-poetry/poetry/issues/7587)
+1. Setting up Bloomberg as a source,
+2. installing `blpapi` tp the environment
+
 ```
-poetry source add --priority bloomberg https://bcms.bloomberg.com/pip/simple
+poetry source add --supplemental bloomberg https://bcms.bloomberg.com/pip/simple
 poetry add --source bloomberg blpapi
 ```
 
