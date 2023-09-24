@@ -5,13 +5,13 @@ for a personal project so if you are here by accident I highly advise you look e
 
 
 ## Bloomberg API
-In order to make calls to Bloomberg we must have the `blpapi` installed. 
-We then extend the excellent `xbbg` package. 
-One complication is the installation of `blpapi` which is a bit of a pain in the backside.
+In order to make calls to Bloomberg the user must have the `blpapi` installed; 
+we then extend the excellent `xbbg` package. 
+Unfortunately, installation of `blpapi` can be a pain in the backside.
 
 Try as I might, I can't get the `pyproject.toml` to correctly install `blpapi` as a dependency.
 If using pip the advice from Bloomberg is trivial
- [Bloomberg website](https://www.bloomberg.com/professional/support/api-library/)
+[Bloomberg website](https://www.bloomberg.com/professional/support/api-library/)
 
 ```
 python -m pip install --index-url=https://bcms.bloomberg.com/pip/simple blpapi
@@ -27,7 +27,8 @@ poetry add --source bloomberg blpapi
 ```
 
 ## Publishing to PyPi
-I'm no pro at deploying packages to PyPi, so have been following  
+I'm no pro at deploying packages to PyPi, so these are my notes for deployment of a poetry package. 
+For reference I followed 
 [this tutorial](https://www.digitalocean.com/community/tutorials/how-to-publish-python-packages-to-pypi-using-poetry-on-ubuntu-22-04)
 
 Key points:
