@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "hxm-refuel"
+version = "0.1.0"
+description = ""
+authors = ["djmcnay <39102979+djmcnay@users.noreply.github.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+xbbg = "^0.7.7"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
