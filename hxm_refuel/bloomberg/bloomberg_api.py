@@ -5,8 +5,8 @@ import pandas as pd
 from xbbg import blp
 
 # Intra package imports
-from topgun.utilities.tinder import flex_date_solver
-from topgun.utilities.validation import TypeHintValidation
+from hxm_refuel.jeeves import flex_date_solver
+from hxm_refuel.validation import TypeHintValidation
 
 
 @TypeHintValidation()
