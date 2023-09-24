@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "hxm-refuel"
 version = "0.1.0"
-description = ""
+description = "Wrapper for financial database APIs"
 authors = ["djmcnay <39102979+djmcnay@users.noreply.github.com>"]
 readme = "README.md"
 
@@ -9,6 +9,7 @@ readme = "README.md"
 python = "^3.10"
 xbbg = "^0.7.7"
 blpapi = {version = "^3.21.0", source = "bloomberg"}
+pytest = "^7.4.2"
 
 
 [[tool.poetry.source]]
