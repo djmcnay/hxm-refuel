@@ -292,7 +292,7 @@ def bdh(tickers: str | list | dict = 'SPX Index',
 
     #
     if interpolate:
-        output = output.interpolate(method="ffill")
+        output = output.ffill()
 
     # optional currency translation
     # Bloomberg's FX override is rather unstable, to we have our own
