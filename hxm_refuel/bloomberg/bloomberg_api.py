@@ -34,7 +34,7 @@ def _pdblp_freq_hack(
         call.index = call.index + pd.offsets.MonthEnd(0)
         return call.dropna(how='all')
 
-    elif freq.upper() in ['W', 'WEEK', 'WEEKLY', 'W-FRI','FRI', 'FRIDAY']:
+    elif freq.upper() in ['W', 'WEEK', 'WEEKLY', 'W-FRI', 'FRI', 'FRIDAY']:
         idx = pd.date_range(t0, t1, freq='W-FRI')
     elif freq.upper() in ['W-THURS', 'THU', 'THURS', 'THURSDAY']:
         idx = pd.date_range(t0, t1, freq='W-THU')
@@ -193,8 +193,7 @@ def index_member_weights(ticker: str = "UKX Index", yellow_button: bool = False)
 
 def index_member_and_bdp(
         ticker: str = "UKX Index",
-        fields: list | tuple = ("name", "PX_LAST"),
-    ):
+        fields: list | tuple = ("name", "PX_LAST")):
     """ Combines Index Member Weights with BDP for Point Data
 
     Note: Only works if yellow_button can be found in index_member_weights; mostly Equity Indices
@@ -377,5 +376,5 @@ def _bdh_fx_translation(
 # test and de-bugging space
 if __name__ == "__main__":
 
-    x = bdh(["MXUS Index", "MXGB Index"], "PX_LAST", t0="20030101", t1="20040101", freq='EOM')
-    print(x.tail(12))
+    test_call = bdh(["MXUS Index", "MXGB Index"], "PX_LAST", t0="20030101", t1="20040101", freq='EOM')
+    print(test_call.tail(12))
