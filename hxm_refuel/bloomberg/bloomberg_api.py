@@ -235,7 +235,7 @@ def bdh_fix_multi_index(output, tickers, fields):
 
 @TypeHintValidation()
 def bdh(tickers: str | list | dict = 'SPX Index',
-        fields: str | list = 'PX_LAST',
+        fields: str | list | dict = 'PX_LAST',
         freq: str = 'EOM',
         t0: str | pd.Timestamp = "-12m",
         t1: str | pd.Timestamp = "today",
@@ -271,7 +271,7 @@ def bdh(tickers: str | list | dict = 'SPX Index',
     """
 
     clean_tickers = _ticker_field_validation(tickers)
-    fields = _ticker_field_validation(fields)
+    clean_fields = _ticker_field_validation(fields)
 
     # pdblp requires dates in string format of form YYYYMMDD
     # if no date provided use today and -12M
@@ -279,7 +279,7 @@ def bdh(tickers: str | list | dict = 'SPX Index',
     t1 = flex_date_solver(t1).strftime("%Y-%m-%d")
 
     try:
-        call = blp.bdh(clean_tickers, fields, t0, t1, **kwargs)     # Run bdh call
+        call = blp.bdh(clean_tickers, clean_fields, t0, t1, **kwargs)     # Run bdh call
         call.index = pd.DatetimeIndex(call.index)                   # force datetime index
     except KeyError:
         msg = f"bloomberg error: debug needs work; check valid tickers/fields & timeseries > 3m"
@@ -305,16 +305,20 @@ def bdh(tickers: str | list | dict = 'SPX Index',
         idx = output.columns.levels[0].map(tickers)
         output.columns = output.columns.set_levels(idx, level=0)
 
+    if isinstance(fields, dict):
+        idx = output.columns.levels[1].map(fields)
+        output.columns = output.columns.set_levels(idx, level=1)
+
     # check if we want output as multi-index or not... assume not
     if not multi_index:
 
         # adjust multi-index
         output = bdh_fix_multi_index(output, tickers, fields)
 
-        # plotly hack - for some reason we get weird results doing px.line()
-        # but if stack() and unstack() the problem resolves itself
-        output = output.stack().reset_index().rename(columns={"": "variables", 0: "values"})
-        output = output.pivot(index='date', columns='variables', values='values')
+        # # plotly hack - for some reason we get weird results doing px.line()
+        # # but if stack() and unstack() the problem resolves itself
+        # output = output.stack().reset_index().rename(columns={"": "variables", 0: "values"})
+        # output = output.pivot(index='date', columns='variables', values='values')
 
         return output
     else:
@@ -376,5 +380,16 @@ def _bdh_fx_translation(
 # test and de-bugging space
 if __name__ == "__main__":
 
-    test_call = bdh(["MXUS Index", "MXGB Index"], "PX_LAST", t0="20030101", t1="20040101", freq='EOM')
+    tickers = {"MXUS Index": "USA", "MXGB Index": "GB"}
+    fields = {"PX_LAST": "Price", "PX_VOLUME": "Volume"}
+
+    test_call = bdh(
+        tickers=tickers,
+        fields=fields,
+        t0="20030101",
+        t1="20040101",
+        freq='EOM',
+        #multi_index=True,
+    )
+
     print(test_call.tail(12))
