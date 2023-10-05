@@ -316,17 +316,8 @@ def bdh(tickers: str | list | dict = 'SPX Index',
     # check if we want output as multi-index or not... assume not
     if not multi_index:
 
-        print(fields)
-
         # adjust multi-index
         output = bdh_fix_multi_index(output, tickers, fields)
-
-
-
-        # # plotly hack - for some reason we get weird results doing px.line()
-        # # but if stack() and unstack() the problem resolves itself
-        # output = output.stack().reset_index().rename(columns={"": "variables", 0: "values"})
-        # output = output.pivot(index='date', columns='variables', values='values')
 
         return output
     else:
@@ -390,19 +381,6 @@ if __name__ == "__main__":
 
     tickers = {"MXUS Index": "USA", "MXGB Index": "GB"}
     fields = {"PX_LAST": "Price", "PX_VOLUME": "Volume"}
-    #
-    # test_call = bdh(
-    #     tickers=tickers,
-    #     fields=fields,
-    #     t0="20030101",
-    #     t1="20040101",
-    #     freq='EOM',
-    #     #multi_index=True,
-    # )
-    #
-    # print(test_call.tail(12))
-
-    tickers = {"MXUS Index": "USA", "MXGB Index": "GB"}
 
     test_call = bdh(
         tickers="MXUS Index",
@@ -413,5 +391,3 @@ if __name__ == "__main__":
     )
 
     print(test_call.tail(12))
-
-
