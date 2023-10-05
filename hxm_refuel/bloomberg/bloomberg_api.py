@@ -218,6 +218,10 @@ def index_member_and_bdp(
 def bdh_fix_multi_index(output, tickers, fields):
     """ If BBG Output is Multi-Index & We want a Single Index """
 
+    # need to ensure fields & tickers are wrapped in a list if they are strings
+    fields = [fields] if isinstance(fields, str) else fields
+    tickers = [tickers] if isinstance(tickers, str) else tickers
+
     if len(fields) == 1:
         # where only one field, assume caller knows what they asked for
         output.columns = output.columns.get_level_values(0).rename("")
@@ -312,8 +316,12 @@ def bdh(tickers: str | list | dict = 'SPX Index',
     # check if we want output as multi-index or not... assume not
     if not multi_index:
 
+        print(fields)
+
         # adjust multi-index
         output = bdh_fix_multi_index(output, tickers, fields)
+
+
 
         # # plotly hack - for some reason we get weird results doing px.line()
         # # but if stack() and unstack() the problem resolves itself
@@ -382,14 +390,28 @@ if __name__ == "__main__":
 
     tickers = {"MXUS Index": "USA", "MXGB Index": "GB"}
     fields = {"PX_LAST": "Price", "PX_VOLUME": "Volume"}
+    #
+    # test_call = bdh(
+    #     tickers=tickers,
+    #     fields=fields,
+    #     t0="20030101",
+    #     t1="20040101",
+    #     freq='EOM',
+    #     #multi_index=True,
+    # )
+    #
+    # print(test_call.tail(12))
+
+    tickers = {"MXUS Index": "USA", "MXGB Index": "GB"}
 
     test_call = bdh(
-        tickers=tickers,
+        tickers="MXUS Index",
         fields=fields,
         t0="20030101",
-        t1="20040101",
+        t1="20030601",
         freq='EOM',
-        #multi_index=True,
     )
 
     print(test_call.tail(12))
+
+
