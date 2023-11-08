@@ -22,7 +22,7 @@ Poetry [requires 2 steps](https://github.com/python-poetry/poetry/issues/7587)
 2. installing `blpapi`
 
 ```
-poetry source add --supplemental bloomberg https://bcms.bloomberg.com/pip/simple
+poetry source add --priority=supplemental bloomberg https://bcms.bloomberg.com/pip/simple/
 poetry add --source bloomberg blpapi
 ```
 
