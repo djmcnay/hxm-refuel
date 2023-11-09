@@ -3,6 +3,40 @@
 Toolbox for importing data from various financial sources; 
 for a personal project so if you are here by accident I highly advise you look elsewhere.
 
+## Usage
+There are no plans to go into any material depth here, so these are just notes to job my own memory. 
+
+### Snowflake
+Snowflake objects here specifically related to the snowflake-connector so connecting to a database. 
+There are two broad functions. 
+`snowflake_connect` which returns a snowflake-python-connector connection, 
+`snowflake_sql_engine` returns an SQL Alchemy engine object. 
+Not being a database pro, both seem to work but I favour the engine. 
+
+Both functions require the same inputs:
+```
+def snowflake_sql_engine(
+    user_details: dict,                     # dictionary of required inputs
+    method='rsa',                           # can be 'rsa' or 'user' 
+    password: None | str = None,            # password if using rsa
+    private_key_file: None | str = None     # file location of .p8 file if using RSA
+    ):
+```
+
+To help there are also templates for the user_details:
+
+```
+SNOWFLAKE_RSA_USER_DETAILS_TEMPLATE = dict(
+    user="USERNAME",
+    password="",
+    account="xx123455",
+    region="eu-west-1",
+    warehouse="LAB_SOMETHING_WH",
+    database="LAB_SOMETHING",
+    # schema="",)
+```
+
+
 ## Installation 
 
 ### Bloomberg API
