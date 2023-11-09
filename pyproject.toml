@@ -11,6 +11,7 @@ xbbg = "^0.7.7"
 pytest = "^7.4.2"
 snowflake-connector-python = "^3.2.0"
 snowflake-sqlalchemy = "^1.5.0"
+pyarrow = ">=10.0.1, <10.1.0"
 cryptography = "^41.0.5"
 
 [tool.poetry.group.optional]

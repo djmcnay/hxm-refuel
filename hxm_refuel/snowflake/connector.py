@@ -67,7 +67,7 @@ def rsa_token_stuff(password: str, private_key_file="rsa_key.p8"):
     return pkb
 
 
-def snowflake_asserts(user_details: dict, method: str):
+def snowflake_asserts(user_details, method, password, private_key_file):
     """ Assertions for Snowflake Connect & SQL Engine """
 
     assert method in ['rsa', 'user'], "supplied method must either be rsa or user"
@@ -82,23 +82,36 @@ def snowflake_asserts(user_details: dict, method: str):
             f"""user_details dict is missing: authenticator as a required field. 
             Possible you used the RSA template rather than the browser login template."""
 
+    if method == "rsa":
+        assert isinstance(password, str), "using an RSA key a password str must be provided"
+        assert isinstance(private_key_file, str), "using an RSA key, private_key_file path must be provided as str"
 
-def snowflake_connect(user_details: dict, method='rsa'):
+
+def snowflake_connect(
+        user_details: dict,
+        method='rsa',
+        password: None | str = None,
+        private_key_file: None | str = None):
     """ Connection to Snowflake via Snowflake-Connector-Python"""
-    snowflake_asserts(user_details, method)
+    snowflake_asserts(**locals())
     if method == 'rsa':
-        pkb = rsa_token_stuff()
+        pkb = rsa_token_stuff(password, private_key_file)
         return connector.connect(
             private_key=pkb, **user_details, client_session_keep_alive=True)
     else:
         return connector.connect(**user_details, client_session_keep_alive=True)
 
 
-def snowflake_sql_engine(user_details: dict, method='rsa'):
+def snowflake_sql_engine(
+        user_details: dict,
+        method='rsa',
+        password: None | str = None,
+        private_key_file: None | str = None,
+    ):
     """ Connection via the SQL Alchemy Engine Method """
-    snowflake_asserts(user_details, method)
+    snowflake_asserts(**locals())
     if method == 'rsa':
-        pkb = rsa_token_stuff()
+        pkb = rsa_token_stuff(password, private_key_file)
         return create_engine(URL(**user_details), connect_args={'private_key': pkb})
     else:
         return create_engine(URL(**user_details))
@@ -106,4 +119,4 @@ def snowflake_sql_engine(user_details: dict, method='rsa'):
 
 # quick run
 if __name__ == '__main__':
-    print("test")
+    print("use this as a test space")
