@@ -3,7 +3,6 @@
 Toolbox for importing data from various financial sources; 
 for a personal project so if you are here by accident I highly advise you look elsewhere.
 
-
 ## Installation 
 
 ### Bloomberg API
@@ -24,6 +23,16 @@ Poetry [requires 2 steps](https://github.com/python-poetry/poetry/issues/7587)
 ```
 poetry source add --priority=supplemental bloomberg https://bcms.bloomberg.com/pip/simple/
 poetry add --source bloomberg blpapi
+```
+
+### Snowflake SQL
+In order to get snowflake connectors working we've had to install several additional packages. 
+Snowflake is very picky about which versions of pyarrow etc... are installed and requires old versions.
+```
+snowflake-connector-python = "^3.2.0"
+snowflake-sqlalchemy = "^1.5.0"
+pyarrow = ">=10.0.1, <10.1.0"
+cryptography = "^41.0.5"
 ```
 
 ## Publishing to PyPi
