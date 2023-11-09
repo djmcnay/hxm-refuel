@@ -119,4 +119,8 @@ def snowflake_sql_engine(
 
 # quick run
 if __name__ == '__main__':
-    print("use this as a test space")
+
+    #
+    import os
+    HOME = os.path.expanduser('~')
+    print(HOME)
