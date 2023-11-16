@@ -8,7 +8,8 @@ There are no plans to go into any material depth here, so these are just notes t
 
 ### Snowflake
 Snowflake objects here specifically related to the snowflake-connector so connecting to a database. 
-There are two broad functions. 
+There are three main functions.
+`rsa_token_stuff` which returns pkb given a password string and private_key_file.p8
 `snowflake_connect` which returns a snowflake-python-connector connection, 
 `snowflake_sql_engine` returns an SQL Alchemy engine object. 
 Not being a database pro, both seem to work but I favour the engine. 
@@ -36,6 +37,9 @@ SNOWFLAKE_RSA_USER_DETAILS_TEMPLATE = dict(
     # schema="",)
 ```
 
+As well as some helper functions
+`check_compatibility` tests a df vs. a snowflake table for compatability (could be a bit buggy)
+`sql_append_with_drop_duplicates` does as it says on the tin
 
 ## Installation 
 

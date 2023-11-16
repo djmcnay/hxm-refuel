@@ -106,8 +106,7 @@ def snowflake_sql_engine(
         user_details: dict,
         method='rsa',
         password: None | str = None,
-        private_key_file: None | str = None,
-    ):
+        private_key_file: None | str = None):
     """ Connection via the SQL Alchemy Engine Method """
     snowflake_asserts(**locals())
     if method == 'rsa':
