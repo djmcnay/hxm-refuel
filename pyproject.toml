@@ -1,12 +1,12 @@
 [tool.poetry]
 name = "hxm-refuel"
-version = "0.2.0"
+version = "0.2.1"
 description = "Wrapper for financial database APIs"
 authors = ["djmcnay <39102979+djmcnay@users.noreply.github.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = ">=3.10, <3.11"
+python = ">=3.10, <3.12"
 xbbg = "^0.7.7"
 pytest = "^7.4.2"
 snowflake-connector-python = "^3.2.0"
