@@ -10,13 +10,13 @@ from hxm_refuel.validation import TypeHintValidation
 
 
 @TypeHintValidation()
-def _pdblp_freq_hack2(df, freq: str = 'EOM'):
+def _pdblp_freq_hack2(df, t0, t1, freq: str = 'EOM'):
     """ Hack to Change Frequency of pdblp Call DataFrame """
 
     # start by reindexing the data so there is daily data
     # this will leave lots of blanks for weekends etc., which we need to interpolate
     # specifically want to interpolate because we want to keep leading & trailing nans
-    df = df.reindex(pd.date_range(df.index.min(), df.index.max(), freq='D'))
+    df = df.reindex(pd.date_range(t0, t1, freq='D'))
     df = df.interpolate(method='pad', limit=7)
 
     # now match to the freq
@@ -276,7 +276,7 @@ def bdh(tickers: str | list | dict = 'SPX Index',
     # pdblp defaults to outputting daily data (weekdays only)
     # We reindex based on desired frequency
     # output = _pdblp_freq_hack(call=call, t0=t0, t1=t1, freq=freq)
-    output = _pdblp_freq_hack2(df=call, freq=freq)
+    output = _pdblp_freq_hack2(df=call, t0=t0, t1=t1, freq=freq)
     output.index.name = 'date'  # worth renaming the date column while we are at it
 
     #
