@@ -10,51 +10,35 @@ from hxm_refuel.validation import TypeHintValidation
 
 
 @TypeHintValidation()
-def _pdblp_freq_hack(
-        call,
-        t0: str,
-        t1: str,
-        freq: str = 'EOM'):
+def _pdblp_freq_hack2(df, freq: str = 'EOM'):
     """ Hack to Change Frequency of pdblp Call DataFrame """
 
-    # pdblp defaults to outputting daily data (weekdays only)
-    # We reindex based on desired frequency
-    # match-case sets up required dates, then use intersection
+    # start by reindexing the data so there is daily data
+    # this will leave lots of blanks for weekends etc., which we need to interpolate
+    # specifically want to interpolate because we want to keep leading & trailing nans
+    df = df.reindex(pd.date_range(df.index.min(), df.index.max(), freq='D'))
+    df = df.interpolate(method='pad', limit=7)
+
+    # now match to the freq
     # https://pandas.pydata.org/pandas-docs/stable/user_guide/timeseries.html#offset-aliases
-    if freq.upper() in ['M', 'MONTH', 'MONTHLY', 'EOM']:
-        # idx = pd.date_range(t0, t1, freq='M') + pd.offsets.MonthEnd(0)
+    match freq.upper():
 
-        # first we want to subset "daily" data from call to the last date in the month
-        # use a groupby function - group index by month, then filter for the max date in that group
-        # https://stackoverflow.com/questions/48288059/how-to-get-last-day-of-each-month-in-pandas-dataframe-index-using-timegrouper
-        idx = call.groupby(call.index.to_period('M')).apply(lambda x: x.index.max())
-        call = call.reindex(index=idx)
-
-        # now shift to the last actual day of the month
-        call.index = call.index + pd.offsets.MonthEnd(0)
-        return call.dropna(how='all')
-
-    elif freq.upper() in ['W', 'WEEK', 'WEEKLY', 'W-FRI', 'FRI', 'FRIDAY']:
-        idx = pd.date_range(t0, t1, freq='W-FRI')
-    elif freq.upper() in ['W-THURS', 'THU', 'THURS', 'THURSDAY']:
-        idx = pd.date_range(t0, t1, freq='W-THU')
-    elif freq.upper() in ['W-WED', 'WED', 'WEDNESDAY']:
-        idx = pd.date_range(t0, t1, freq='W-WED')
-    elif freq.upper() in ['D', 'DAY', 'DAILY']:
-        # https://pandas.pydata.org/docs/reference/api/pandas.bdate_range.html
-        idx = pd.date_range(t0, t1, freq="B")
-    elif freq.upper() in ['Y', 'YE', 'ANNUAL']:
-        # want to start moving toward using resampe!!!
-        return call.resample('Y').last()
-    else:
-        return call.dropna(how='all')
-
-    # subset daily data using idx
-    # first step here is a hack to makesure we ffill from previous day
-    call = pd.concat([call, pd.DataFrame(index=idx)], axis=1)
-    call = call.loc[call.index.intersection(idx), :]
-
-    return call.dropna(how='all')
+        case x if x in ['Y', 'YE', 'ANNUAL']:
+            return df.resample('Y').last()
+        case x if x in ['Q', 'QUARTER', 'QUARTERLY']:
+            return df.resample('Q').last()
+        case x if x in ['M', 'MONTH', 'MONTHLY', 'EOM']:
+            return df.resample('M').last()
+        case x if x in ['W', 'WEEK', 'WEEKLY', 'W-FRI', 'FRI', 'FRIDAY']:
+            return df.resample('W-FRI').last()
+        case x if x in ['W-THURS', 'THU', 'THURS', 'THURSDAY']:
+            return df.resample('W-THU').last()
+        case x if x in ['W-WED', 'WED', 'WEDNESDAY']:
+            return df.resample('W-WED').last()
+        case x if x in ['B', 'D', 'DAY', 'DAILY']:
+            return df.resample('B').last()
+        case _:
+            return df.dropna(how='all')
 
 
 # Data Validation: ensure tickers and fields are lists and not strings
@@ -291,7 +275,8 @@ def bdh(tickers: str | list | dict = 'SPX Index',
 
     # pdblp defaults to outputting daily data (weekdays only)
     # We reindex based on desired frequency
-    output = _pdblp_freq_hack(call=call, t0=t0, t1=t1, freq=freq)
+    # output = _pdblp_freq_hack(call=call, t0=t0, t1=t1, freq=freq)
+    output = _pdblp_freq_hack2(df=call, freq=freq)
     output.index.name = 'date'  # worth renaming the date column while we are at it
 
     #
