@@ -3,6 +3,24 @@ import pandas as pd
 from snowflake.connector.pandas_tools import write_pandas
 
 
+def posh_create_or_append(conn, df: pd.DataFrame, table_name: str, cols: tuple | list | set = ()):
+    """ Creates a new table or appends, removing duplicated with grouper columns """
+
+    assert isinstance(df, pd.DataFrame), f"df needs to by a pandas dataframe: type{type(df)}-passed"
+    assert isinstance(table_name, str), f"""
+        table_name must be a string of an existing table or the one to be created: {type(table_name)}-passed """
+
+    with conn.cursor() as cur:
+
+        # use the show tables in SQL to find table of that name; use that to tell if the table exists
+        cur.execute(f"SHOW TABLES LIKE '{table_name}'")
+        rows = cur.fetchall()
+        if len(rows) > 0:
+            sql_append_with_drop_duplicates(conn, df, table_name, cols)
+        else:
+            write_pandas(conn, df, table_name, auto_create_table=True)
+
+
 def check_compatibility(conn, df: pd.DataFrame, table_name: str, map_fudge: dict = {}):
     """ Snowflake Helper Function to Check Dataframe Compatability Before Upload
 
