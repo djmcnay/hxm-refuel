@@ -21,6 +21,23 @@ def posh_create_or_append(conn, df: pd.DataFrame, table_name: str, cols: tuple |
             write_pandas(conn, df, table_name, auto_create_table=True)
 
 
+def posh_create_or_replace(conn, df: pd.DataFrame, table_name: str):
+    """ Creates a new table or replaces """
+
+    assert isinstance(df, pd.DataFrame), f"df needs to by a pandas dataframe: type{type(df)}-passed"
+
+    with conn.cursor() as cur:
+
+        # use the show tables in SQL to find table of that name; use that to tell if the table exists
+        cur.execute(f"SHOW TABLES LIKE '{table_name}'")
+        rows = cur.fetchall()
+        if len(rows) > 0:
+            cur.execute(f""" DROP TABLE {table_name}""")
+
+        write_pandas(conn, df, table_name, auto_create_table=True)
+        conn.commit()
+
+
 def check_compatibility(conn, df: pd.DataFrame, table_name: str, map_fudge: dict = {}):
     """ Snowflake Helper Function to Check Dataframe Compatability Before Upload
 

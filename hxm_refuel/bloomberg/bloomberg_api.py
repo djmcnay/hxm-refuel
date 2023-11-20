@@ -267,8 +267,8 @@ def bdh(tickers: str | list | dict = 'SPX Index',
     t1 = flex_date_solver(t1).strftime("%Y-%m-%d")
 
     try:
-        call = blp.bdh(clean_tickers, clean_fields, t0, t1, **kwargs)     # Run bdh call
-        call.index = pd.DatetimeIndex(call.index)                   # force datetime index
+        call = blp.bdh(clean_tickers, clean_fields, t0, t1, **kwargs)       # Run bdh call
+        call.index = pd.to_datetime(call.index)                           # force datetime index
     except KeyError:
         msg = f"bloomberg error: debug needs work; check valid tickers/fields & timeseries > 3m"
         raise Exception(msg)
