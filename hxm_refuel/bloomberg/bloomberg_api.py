@@ -28,7 +28,7 @@ def _pdblp_freq_hack2(df, t0, t1, freq: str = 'EOM'):
         case x if x in ['Q', 'QUARTER', 'QUARTERLY']:
             return df.resample('Q').last()
         case x if x in ['M', 'MONTH', 'MONTHLY', 'EOM']:
-            return df.resample('M').last()
+            return df.resample('ME').last()
         case x if x in ['W', 'WEEK', 'WEEKLY', 'W-FRI', 'FRI', 'FRIDAY']:
             return df.resample('W-FRI').last()
         case x if x in ['W-THURS', 'THU', 'THURS', 'THURSDAY']:
