@@ -20,8 +20,14 @@ def interpolate_ffill(df, limit=None):
     :param limit: Maximum number of consecutive NaNs to fill. If None, fills all consecutive NaNs.
     :return: DataFrame or Series with NaNs forward filled, respecting no extrapolation at the end.
     """
-    # Apply forward fill with the specified limit
+
+    # copy initial dataframe for manipulation
+    # we reset index with a drop to ensure we have a numerical index;
+    # timestamps cause reference problems where we can't add to an index later
+    idx_original = df.index
+    df = df.reset_index(drop=True)
     df_filled = df.copy()
+
     if limit is not None:
         for col in df_filled.columns:
             df_filled[col] = df_filled[col].ffill(limit=limit)
@@ -34,6 +40,8 @@ def interpolate_ffill(df, limit=None):
         if last_valid_index is not None and last_valid_index + 1 < len(df_filled):
             df_filled.loc[last_valid_index + 1:, col] = np.nan
 
+    # repopulate with original index - if changed
+    df_filled.index = idx_original
     return df_filled
 
 

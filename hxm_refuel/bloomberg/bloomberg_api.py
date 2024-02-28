@@ -17,6 +17,7 @@ def _pdblp_freq_hack2(df, t0, t1, freq: str = 'EOM'):
     # this will leave lots of blanks for weekends etc., which we need to interpolate
     # specifically want to interpolate because we want to keep leading & trailing nans
     df = df.reindex(pd.date_range(t0, t1, freq='D'))
+
     # df = df.interpolate(method='pad', limit=7)        # method is depreciated
     df = interpolate_ffill(df, limit=7)
 
