@@ -5,7 +5,7 @@ import pandas as pd
 from xbbg import blp
 
 # Intra package imports
-from hxm_refuel.jeeves import flex_date_solver
+from hxm_refuel.jeeves import flex_date_solver, interpolate_ffill
 from hxm_refuel.validation import TypeHintValidation
 
 
@@ -17,7 +17,8 @@ def _pdblp_freq_hack2(df, t0, t1, freq: str = 'EOM'):
     # this will leave lots of blanks for weekends etc., which we need to interpolate
     # specifically want to interpolate because we want to keep leading & trailing nans
     df = df.reindex(pd.date_range(t0, t1, freq='D'))
-    df = df.interpolate(method='pad', limit=7)
+    # df = df.interpolate(method='pad', limit=7)        # method is depreciated
+    df = interpolate_ffill(df, limit=7)
 
     # now match to the freq
     # https://pandas.pydata.org/pandas-docs/stable/user_guide/timeseries.html#offset-aliases
