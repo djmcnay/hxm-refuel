@@ -1,7 +1,40 @@
 """ Collection of functions to help you with dates... get it??? """
-
+import numpy as np
 import pandas as pd
 import re
+
+
+def interpolate_ffill(df, limit=None):
+    """ Hack for Interpolation with Forward Fill
+
+    This used to be as simple as df.interpolate(method='pad', limit=None)
+    but some dickhead has decided to depreciate the functionality in Pandas.
+    The suggested methods are obj.ffill() and obj.bfill() which are not interpolations.
+
+    We create our own function, with the help of Chad.
+
+    Apply forward fill interpolation to a DataFrame or Series without extrapolation,
+    adjusting the method to avoid future ChainedAssignmentError warnings.
+
+    :param df: Pandas DataFrame or Series to apply forward fill.
+    :param limit: Maximum number of consecutive NaNs to fill. If None, fills all consecutive NaNs.
+    :return: DataFrame or Series with NaNs forward filled, respecting no extrapolation at the end.
+    """
+    # Apply forward fill with the specified limit
+    df_filled = df.copy()
+    if limit is not None:
+        for col in df_filled.columns:
+            df_filled[col] = df_filled[col].ffill(limit=limit)
+    else:
+        df_filled = df_filled.ffill()
+
+    # Correctly handling to avoid future deprecation with chained assignment
+    for col in df_filled.columns:
+        last_valid_index = df[col].last_valid_index()
+        if last_valid_index is not None and last_valid_index + 1 < len(df_filled):
+            df_filled.loc[last_valid_index + 1:, col] = np.nan
+
+    return df_filled
 
 
 def end_of_period(today: pd.Timestamp, freq: str) -> pd.Timestamp:
@@ -98,3 +131,6 @@ def flex_date_solver(
             except ValueError:
                 msg = f"date solve error: {date_input} not valid input to pd.to_datetime()"
                 raise Exception(msg)
+
+
+
