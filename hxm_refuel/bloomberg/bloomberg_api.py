@@ -270,16 +270,20 @@ def bdh(tickers: str | list | dict = 'SPX Index',
 
     try:
         call = blp.bdh(clean_tickers, clean_fields, t0, t1, **kwargs)       # Run bdh call
-        call.index = pd.to_datetime(call.index)                           # force datetime index
+        call.index = pd.to_datetime(call.index)                             # force datetime index
     except KeyError:
         msg = f"bloomberg error: debug needs work; check valid tickers/fields & timeseries > 3m"
         raise Exception(msg)
 
     # pdblp defaults to outputting daily data (weekdays only)
     # We reindex based on desired frequency
-    # output = _pdblp_freq_hack(call=call, t0=t0, t1=t1, freq=freq)
     output = _pdblp_freq_hack2(df=call, t0=t0, t1=t1, freq=freq)
-    output.index.name = 'date'  # worth renaming the date column while we are at it
+    output.index.name = 'date'                      # worth renaming the date column while we are at it
+
+    # remove data that is beyond t1 date
+    # happens when we resample the date; most recent observation is added to resample freq
+    # ie t1 = 5-March & freq = EOM. Obs from 5th March will be in dataframe labelled 31-March
+    output = output[output.index <= t1]
 
     #
     if interpolate:
@@ -373,7 +377,6 @@ if __name__ == "__main__":
         tickers="MXUS Index",
         fields=fields,
         t0="20030101",
-        t1="20030601",
         freq='EOM',
     )
 
