@@ -377,7 +377,7 @@ if __name__ == "__main__":
         tickers="MXUS Index",
         fields=fields,
         t0="20030101",
-        freq='EOM',
+        freq='D',
     )
 
     print(test_call.tail(12))
