@@ -131,7 +131,7 @@ def snowflake_sql_engine(
         warnings.warn(f"""
         hxm-refuel warning: there is a change to SQL Alchemy meaning we need to specify a connect() or raw_connection()
         lots of packages have been refactored to convert a engine already; 
-        in the future we will set the raw defualt == True 
+        in the future we will set the raw default == True 
         """)
         return engine
 
