@@ -1,4 +1,5 @@
 """ Snowflake Connection Stuff """
+import warnings
 
 # Snowflake connection stuff
 from sqlalchemy import create_engine
@@ -67,11 +68,12 @@ def rsa_token_stuff(password: str, private_key_file="rsa_key.p8"):
     return pkb
 
 
-def snowflake_asserts(user_details, method, password, private_key_file):
+def snowflake_asserts(user_details, method, password, private_key_file, raw):
     """ Assertions for Snowflake Connect & SQL Engine """
 
     assert method in ['rsa', 'user'], "supplied method must either be rsa or user"
     assert isinstance(user_details, dict), f"user details must be supplied as dictionary: {type(user_details)} provided"
+    assert isinstance(raw, bool), f"raw must be boolean: {type(raw)}"
 
     # check all the keys from the RSA template are in the user_details
     for k in SNOWFLAKE_RSA_USER_DETAILS_TEMPLATE.keys():
@@ -106,14 +108,32 @@ def snowflake_sql_engine(
         user_details: dict,
         method='rsa',
         password: None | str = None,
-        private_key_file: None | str = None):
-    """ Connection via the SQL Alchemy Engine Method """
+        private_key_file: None | str = None,
+        raw: bool = False):
+    """
+    Connection via the SQL Alchemy Engine Method
+
+    Parameters:
+        raw: bool == False: outputs engine.raw_connection() object
+
+    """
     snowflake_asserts(**locals())
     if method == 'rsa':
         pkb = rsa_token_stuff(password, private_key_file)
-        return create_engine(URL(**user_details), connect_args={'private_key': pkb})
+        engine = create_engine(URL(**user_details), connect_args={'private_key': pkb})
     else:
-        return create_engine(URL(**user_details))
+        engine = create_engine(URL(**user_details))
+
+    # there was a change in SQL Alchemy
+    if raw:
+        return engine.raw_connection()
+    else:
+        warnings.warn(f"""
+        hxm-refuel warning: there is a change to SQL Alchemy meaning we need to specify a connect() or raw_connection()
+        lots of packages have been refactored to convert a engine already; 
+        in the future we will set the raw defualt == True 
+        """)
+        return engine
 
 
 # quick run
