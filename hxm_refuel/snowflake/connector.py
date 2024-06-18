@@ -93,7 +93,8 @@ def snowflake_connect(
         user_details: dict,
         method='rsa',
         password: None | str = None,
-        private_key_file: None | str = None):
+        private_key_file: None | str = None,
+        raw: bool = False):
     """ Connection to Snowflake via Snowflake-Connector-Python"""
     snowflake_asserts(**locals())
     if method == 'rsa':
