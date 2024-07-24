@@ -39,12 +39,12 @@ def container_connect_decorator(func):
 
     # the extra decorator means we can still use help etc.
     @functools.wraps(func)
-    def wrapper():
+    def wrapper(*args, **kwargs):
         # we know if we are in a Snowflake container if 'SNOWFLAKE_HOST' in the os.environ
         if 'SNOWFLAKE_HOST' in os.environ.keys():
             return get_container_connection().raw_connection()
         else:
-            return func()
+            return func(*args, **kwargs)
 
     return wrapper
 
@@ -60,11 +60,11 @@ def container_engine_decorator(func):
 
     # the extra decorator means we can still use help etc.
     @functools.wraps(func)
-    def wrapper():
+    def wrapper(*args, **kwargs):
         # we know if we are in a Snowflake container if 'SNOWFLAKE_HOST' in the os.environ
         if 'SNOWFLAKE_HOST' in os.environ.keys():
             return snowflake_container_sql_engine().raw_connection()
         else:
-            return func()
+            return func(*args, **kwargs)
 
     return wrapper
