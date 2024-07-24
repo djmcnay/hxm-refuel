@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "hxm-refuel"
-version = "0.2.14"
+version = "0.2.15"
 description = "Wrapper for financial database APIs"
 authors = ["djmcnay <39102979+djmcnay@users.noreply.github.com>"]
 readme = "README.md"

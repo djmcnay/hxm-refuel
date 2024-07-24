@@ -90,7 +90,7 @@ def snowflake_asserts(user_details, method, password, private_key_file, raw):
         assert isinstance(private_key_file, str), "using an RSA key, private_key_file path must be provided as str"
 
 
-@container_connect_decorator()
+@container_connect_decorator
 def snowflake_connect(
         user_details: dict,
         method='rsa',
@@ -107,7 +107,7 @@ def snowflake_connect(
         return connector.connect(**user_details, client_session_keep_alive=True)
 
 
-@container_engine_decorator()
+@container_engine_decorator
 def snowflake_sql_engine(
         user_details: dict,
         method='rsa',
