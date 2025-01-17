@@ -42,7 +42,7 @@ def container_connect_decorator(func):
     def wrapper(*args, **kwargs):
         # we know if we are in a Snowflake container if 'SNOWFLAKE_HOST' in the os.environ
         if 'SNOWFLAKE_HOST' in os.environ.keys():
-            return get_container_connection().raw_connection()
+            return get_container_connection()
         else:
             return func(*args, **kwargs)
 
